@@ -1,49 +1,29 @@
+import EventCard from '@/components/EventCard';
+import { initialEvents } from '@/data/events';
 import { Text } from 'expo-router/build/react-navigation';
-import { StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+
+
 
 export default function HomeScreen() {
+  const [events, setEvents] = useState(initialEvents)
+
+  const deleteEvent = (id: string) => {
+    setEvents(prevEvents => prevEvents.filter(event => event.id !== id))
+  }
+
+
   return (
     <View style={styles.container}>
 
       <Text style={styles.title}>Події коледжу</Text>
 
-      <View style={styles.article}>
-        <Text style={styles.articleTitle}>
-          Українське кіно: від класики до генеративного мистецтва
-        </Text>
-
-        <Text style={styles.articleText}>
-          Для студентів групи П-227 відбувся особливий захід,
-          який майстерно об'єднав глибоку повагу до національної
-          кіноспадщини та передові цифрові технології.
-        </Text>
-      </View>
-
-      <View style={styles.article}>
-        <Text style={styles.articleTitle}>
-          Урочистий початок нового навчального року в коледжі
-        </Text>
-
-        <Text style={styles.articleText}>
-          1 вересня в актовій залі коледжу відбувся урочистий захід,
-          присвячений зустрічі студентів першого курсу та їхньому
-          знайомству з наставниками.
-        </Text>
-      </View>
-
-      <View style={styles.article}>
-        <Text style={styles.articleTitle}>
-          Шаную Воїнів, біжу за Героїв України
-        </Text>
-
-        <Text style={styles.articleText}>
-          29 серпня 2026 року студенти та викладачі спеціальності
-          «Фізична культура і спорт» взяли участь у щорічному
-          Всеукраїнському патріотичному забігу
-          «Шаную Воїнів, біжу за Героїв України».
-        </Text>
-      </View>
-
+      <ScrollView>
+        {events.map((event) => (
+          <EventCard key={event.id} event={event} onDelete={deleteEvent}/>
+        ))}
+      </ScrollView>
     </View>
   );
 }
