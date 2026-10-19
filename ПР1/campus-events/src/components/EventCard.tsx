@@ -1,36 +1,78 @@
-import { EventItem } from "@/types/event";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { EventItem } from '@/types/event';
+import {
+  Button,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 type EventCardProps = {
   event: EventItem;
   onDelete: (id: string) => void;
+  isFavorite: boolean;
+  onToggleFavorite: () => void;
 };
 
-const EventCard = ({ event, onDelete } : EventCardProps) => {
-    return (
-      <View style={styles.article}>
-        <Text style={styles.articleTitle}>
-            {event.title}
+const EventCard = ({
+  event,
+  onDelete,
+  isFavorite,
+  onToggleFavorite,
+}: EventCardProps) => {
+  return (
+    <View style={styles.article}>
+      <Text style={styles.articleTitle}>
+        {event.title}
+      </Text>
+
+      <Text style={styles.category}>
+        {event.category}
+      </Text>
+
+      <Text style={styles.articleText}>
+        {event.description}
+      </Text>
+
+      <Text style={styles.articleDate}>
+        {event.date}
+      </Text>
+
+      <Pressable
+        style={[
+          styles.favoriteButton,
+          isFavorite && styles.favoriteActive,
+        ]}
+        onPress={onToggleFavorite}
+        accessibilityRole="button"
+        accessibilityLabel={
+          isFavorite
+            ? `Прибрати ${event.title} з обраного`
+            : `Додати ${event.title} в обране`
+        }
+      >
+        <Text
+          style={[
+            styles.favoriteText,
+            isFavorite && styles.favoriteTextActive,
+          ]}
+        >
+          {isFavorite
+            ? 'Прибрати з обраного'
+            : 'В обране'}
         </Text>
+      </Pressable>
 
-        <Text style={styles.articleText}>
-            {event.description}
-        </Text>
+      <Button
+        title="Видалити"
+        color="#dc2626"
+        onPress={() => onDelete(event.id)}
+      />
+    </View>
+  );
+};
 
-        <Text style={styles.articleDate}>
-            {event.date}
-        </Text>
-
-        <Button
-          title="Видалити"
-          onPress={() => onDelete(event.id)}
-        />
-      </View>
-
-    )
-}
-
-export default EventCard
+export default EventCard;
 
 const styles = StyleSheet.create({
   article: {
@@ -47,6 +89,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
+  category: {
+    color: '#2563eb',
+    fontSize: 13,
+    marginBottom: 8,
+  },
+
   articleText: {
     fontSize: 16,
     lineHeight: 23,
@@ -59,4 +107,25 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
+  favoriteButton: {
+    padding: 11,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#2563eb',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+
+  favoriteActive: {
+    backgroundColor: '#2563eb',
+  },
+
+  favoriteText: {
+    color: '#2563eb',
+    fontWeight: '600',
+  },
+
+  favoriteTextActive: {
+    color: 'white',
+  },
 });
