@@ -1,4 +1,5 @@
 import { EventItem } from '@/types/event';
+import { memo } from 'react';
 import {
   Button,
   Pressable,
@@ -11,15 +12,15 @@ type EventCardProps = {
   event: EventItem;
   onDelete: (id: string) => void;
   isFavorite: boolean;
-  onToggleFavorite: () => void;
+  onToggleFavorite: (id: string) => void;
 };
 
-const EventCard = ({
+const EventCard = memo(function EventCard({
   event,
   onDelete,
   isFavorite,
   onToggleFavorite,
-}: EventCardProps) => {
+}: EventCardProps) {
   return (
     <View style={styles.article}>
       <Text style={styles.articleTitle}>
@@ -47,7 +48,7 @@ const EventCard = ({
           styles.favoriteButton,
           isFavorite && styles.favoriteActive,
         ]}
-        onPress={onToggleFavorite}
+        onPress={() => onToggleFavorite(event.id)}
         accessibilityRole="button"
         accessibilityLabel={
           isFavorite
@@ -74,14 +75,15 @@ const EventCard = ({
       />
     </View>
   );
-};
+});
 
 export default EventCard;
 
 const styles = StyleSheet.create({
   article: {
+    flex: 1,
     backgroundColor: 'white',
-    margin: 10,
+    marginVertical: 8,
     padding: 15,
     borderRadius: 10,
     boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.2)',
@@ -91,6 +93,8 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: 'bold',
     marginBottom: 10,
+    flexShrink: 1,
+    flexWrap: 'wrap',
   },
 
   category: {
