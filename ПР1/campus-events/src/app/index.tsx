@@ -1,8 +1,10 @@
 import EventCard from '@/components/EventCard';
+import EventForm from '@/components/EventForm';
 import { initialEvents } from '@/data/events';
 import { EventItem } from '@/types/event';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -20,7 +22,8 @@ const categories: Category[] = [
 ];
 
 export default function HomeScreen() {
-  const [events, setEvents] = useState(initialEvents);
+  const [events, setEvents] = useState<EventItem[]>(initialEvents);
+
   const [category, setCategory] = useState<Category>('Усі');
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
   const [filterNotice, setFilterNotice] = useState('');
@@ -35,7 +38,7 @@ export default function HomeScreen() {
     }
 
     return events.filter((event) => event.category === category);
-  }, [category, events]);
+  }, [events, category]);
 
   useEffect(() => {
     if (previousCategory.current === category) {
@@ -70,48 +73,64 @@ export default function HomeScreen() {
     );
   };
 
+  const addEvent = (event: EventItem) => {
+    setEvents((previous) => [event, ...previous]);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Події коледжу</Text>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Image
+          source={require('../../assets/images/college-events.jpg')}
+          style={styles.banner}
+          accessible
+          accessibilityLabel="Студенти спілкуються у дворі коледжу біля будівлі"
+          resizeMode="cover"
+        />
+        <Text style={styles.title}>Події коледжу</Text>
 
-      <View style={styles.filters}>
-        {categories.map((item) => {
-          const isActive = category === item;
+        <View style={styles.filters}>
+          {categories.map((item) => {
+            const isActive = category === item;
 
-          return (
-            <Pressable
-              key={item}
-              style={[
-                styles.filterButton,
-                isActive && styles.activeFilter,
-              ]}
-              onPress={() => setCategory(item)}
-              accessibilityRole="button"
-              accessibilityLabel={`Фільтр: ${item}`}
-              accessibilityState={{ selected: isActive }}
-            >
-              <Text
+            return (
+              <Pressable
+                key={item}
                 style={[
-                  styles.filterText,
-                  isActive && styles.activeFilterText,
+                  styles.filterButton,
+                  isActive && styles.activeFilter,
                 ]}
+                onPress={() => setCategory(item)}
+                accessibilityRole="button"
+                accessibilityLabel={`Фільтр: ${item}`}
+                accessibilityState={{ selected: isActive }}
               >
-                {item}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
+                <Text
+                  style={[
+                    styles.filterText,
+                    isActive && styles.activeFilterText,
+                  ]}
+                >
+                  {item}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
 
-      <Text style={styles.favoriteCount}>
-        Обрано: {favoriteIds.length}
-      </Text>
+        <Text style={styles.favoriteCount}>
+          Обрано: {favoriteIds.length}
+        </Text>
 
-      {filterNotice !== '' && (
-        <Text style={styles.notice}>{filterNotice}</Text>
-      )}
+        {filterNotice !== '' && (
+          <Text style={styles.notice}>{filterNotice}</Text>
+        )}
 
-      <ScrollView>
+        <EventForm onAdd={addEvent} />
+
         {visibleEvents.length === 0 ? (
           <Text style={styles.emptyText}>
             У цій категорії поки немає подій
@@ -135,17 +154,26 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f6f8',
+    backgroundColor: '#f1f6f4',
+  },
+
+  content: {
+    paddingBottom: 28,
+  },
+
+  banner: {
+    width: '100%',
+    height: 150,
   },
 
   title: {
     textAlign: 'center',
-    fontSize: 23,
-    fontWeight: 'bold',
-    backgroundColor: 'white',
-    paddingTop: 30,
-    paddingBottom: 15,
-    boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.2)',
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#17324d',
+    backgroundColor: '#ffffff',
+    paddingTop: 14,
+    paddingBottom: 16,
   },
 
   filters: {
@@ -166,8 +194,8 @@ const styles = StyleSheet.create({
   },
 
   activeFilter: {
-    backgroundColor: '#2563eb',
-    borderColor: '#2563eb',
+    backgroundColor: '#176b5b',
+    borderColor: '#176b5b',
   },
 
   filterText: {
@@ -188,7 +216,7 @@ const styles = StyleSheet.create({
 
   notice: {
     textAlign: 'center',
-    color: '#2563eb',
+    color: '#176b5b',
     marginBottom: 6,
   },
 

@@ -38,6 +38,10 @@ const EventCard = ({
         {event.date}
       </Text>
 
+      {event.location ? (
+        <Text style={styles.location}>Місце: {event.location}</Text>
+      ) : null}
+
       <Pressable
         style={[
           styles.favoriteButton,
@@ -105,6 +109,12 @@ const styles = StyleSheet.create({
     color: 'gray',
     marginTop: 10,
     marginBottom: 10,
+  },
+
+  location: {
+    fontSize: 14,
+    color: '#475569',
+    marginBottom: 12,
   },
 
   favoriteButton: {
